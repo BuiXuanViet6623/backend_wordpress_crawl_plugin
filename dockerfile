@@ -1,21 +1,23 @@
+# Chọn Node.js 20 chính thức
 FROM node:20-bullseye
 
-# cài dependency cho Playwright
-RUN apt-get update && apt-get install -y \
-    libnss3 libatk-bridge2.0-0 libgtk-3-0 libx11-xcb1 libxcomposite1 libxdamage1 \
-    libxrandr2 libgbm1 libpango1.0-0 libcups2 libasound2 libxshmfence1 wget curl unzip
-
+# Set working directory
 WORKDIR /app
 
+# Copy package.json & package-lock.json
 COPY package*.json ./
+
+# Cài dependencies
 RUN npm install
+
+# Cài Playwright + Chromium + dependencies OS
 RUN npx playwright install --with-deps chromium
 
+# Copy toàn bộ code
 COPY . .
 
-ENV NODE_ENV=production
-ENV PORT=10000
-
+# Expose port trùng server.js
 EXPOSE 10000
 
+# Start server
 CMD ["node", "server.js"]
